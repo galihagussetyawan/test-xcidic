@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserRequest } from './create-user-request-type';
 import { PaginateResponse } from '../utils/types/paginate-type';
+import { checkIsValidEmail } from 'src/utils/helpers/helpers';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,23 @@ export class UserService {
   ) {}
 
   async createUser(req: CreateUserRequest): Promise<User> {
+    if (!req.name) {
+      throw new BadRequestException('name is required');
+    }
+
+    if (!req.email) {
+      throw new BadRequestException('email is required');
+    }
+
+    if (!req.password) {
+      throw new BadRequestException('name is required');
+    }
+
+    const isValidEmail = checkIsValidEmail(req.email);
+    if (!isValidEmail) {
+      throw new BadRequestException('email is not valid');
+    }
+
     try {
       return await this.userRepository.save(req);
     } catch (error) {}
