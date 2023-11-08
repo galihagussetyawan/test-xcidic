@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { CreateUserRequest, UserService } from './user.service';
 import { Response } from 'express';
 
@@ -23,12 +31,15 @@ export class UserController {
   }
 
   @Get('/all')
-  async getUsers(@Res() res: Response) {
+  async getUsers(
+    @Res() res: Response,
+    @Query() query: { page: number; take: number },
+  ) {
     try {
       res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         message: 'success create user',
-        data: await this.userService.getUsers(),
+        data: await this.userService.getUsers(query.page, query.take),
       });
     } catch (error) {
       res.status(error.status).send({
