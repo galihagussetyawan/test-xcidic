@@ -6,10 +6,12 @@ import {
   Post,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { CreateUserRequest } from './create-user-request-type';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -32,6 +34,7 @@ export class UserController {
   }
 
   @Get('/all')
+  @UseGuards(JwtAuthGuard)
   async getUsers(
     @Res() res: Response,
     @Query() query: { page: number; take: number },
