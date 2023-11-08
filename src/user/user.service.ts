@@ -18,4 +18,10 @@ export class UserService {
   async createUser(req: CreateUserRequest): Promise<User> {
     return await this.userRepository.save(req);
   }
+
+  async getUsers(): Promise<User[]> {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {}
+  }
 }
