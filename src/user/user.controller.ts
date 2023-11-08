@@ -7,11 +7,13 @@ import {
   Query,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { CreateUserRequest } from './create-user-request-type';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ResponseTimeInterceptor } from 'src/utils/interceptors/response-time.interceptor';
 
 @Controller('user')
 export class UserController {
@@ -35,6 +37,7 @@ export class UserController {
 
   @Get('/all')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ResponseTimeInterceptor)
   async getUsers(
     @Res() res: Response,
     @Query() query: { page: number; take: number },
