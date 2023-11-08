@@ -7,8 +7,9 @@ import {
   Query,
   Res,
 } from '@nestjs/common';
-import { CreateUserRequest, UserService } from './user.service';
+import { UserService } from './user.service';
 import { Response } from 'express';
+import { CreateUserRequest } from './create-user-request-type';
 
 @Controller('user')
 export class UserController {
@@ -39,7 +40,10 @@ export class UserController {
       res.status(HttpStatus.OK).send({
         status: HttpStatus.OK,
         message: 'success create user',
-        data: await this.userService.getUsers(query.page, query.take),
+        data: await this.userService.getUsers(
+          Number(query.page),
+          Number(query.take),
+        ),
       });
     } catch (error) {
       res.status(error.status).send({

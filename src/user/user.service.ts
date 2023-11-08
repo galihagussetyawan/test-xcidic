@@ -2,12 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
-
-export type CreateUserRequest = {
-  name: string;
-  email: string;
-  password: string;
-};
+import { CreateUserRequest } from './create-user-request-type';
+import { PaginateResponse } from '../utils/types/paginate-type';
 
 @Injectable()
 export class UserService {
@@ -21,7 +17,10 @@ export class UserService {
     } catch (error) {}
   }
 
-  async getUsers(qPage: number, qTake: number) {
+  async getUsers(
+    qPage: number,
+    qTake: number,
+  ): Promise<PaginateResponse<User>> {
     try {
       const take = qTake || 10;
       const page = qPage || 1;
@@ -33,12 +32,12 @@ export class UserService {
       });
 
       const lastPage = totalCount < take ? 1 : Math.ceil(totalCount / take);
-      const nextPage = Number(page) + 1 > lastPage ? null : Number(page) + 1;
-      const prevPage = Number(page) - 1 < 1 ? null : Number(page) - 1;
+      const nextPage = page + 1 > lastPage ? null : page + 1;
+      const prevPage = page - 1 < 1 ? null : page - 1;
 
       return {
         items,
-        totalCount,
+        totalItem: totalCount,
         totalPage: lastPage,
         currentPage: Number(page),
         nextPage: nextPage,
